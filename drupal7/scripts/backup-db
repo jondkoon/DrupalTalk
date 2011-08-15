@@ -1,0 +1,10 @@
+#!/bin/bash
+drupal_dir=../drupal7/
+site=drupal7.com
+backup_dir=../backup/sql/
+file=${backup_dir}${site}-`date +%Y-%m-%d-%H-%M-%S`.sql
+
+mv ${backup_dir}*.sql.gz ${backup_dir}archive/
+
+mkdir -p ${backup_dir}
+drush -r ${drupal_dir} -l http://${site} sql-dump --result-file=${file} --gzip

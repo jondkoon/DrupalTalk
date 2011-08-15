@@ -1,0 +1,21 @@
+#!/bin/bash
+drupal_dir=../drupal6/
+site=drupal6.com
+file=$1
+
+echo "Creating temporary directory..."
+mkdir tmp
+echo "Copying file to temporary directory..."
+cp ${file} tmp/
+cd tmp
+file_tmp=tmp/`sudo basename ${file%.gz}`
+cd ..
+echo "Unzipping database..."
+gunzip ${file_tmp}
+echo "Dropping tables..."
+drush -r ${drupal_dir} -l http://${site} sql-drop --yes
+echo "Importing database..."
+`drush sql-connect -r ${drupal_dir} -l http://${site}` < ${file_tmp}
+echo "Deleting temporary directory..."
+rm -rf tmp
+echo "Script complete"
